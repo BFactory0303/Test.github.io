@@ -1,0 +1,1209 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Alex Nguyen — Digital Marketer</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0a;
+    --surface: #111111;
+    --surface2: #181818;
+    --border: #222222;
+    --accent: #e8ff47;
+    --accent2: #ff6b35;
+    --text: #f0f0f0;
+    --muted: #666666;
+    --muted2: #444444;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* CUSTOM CURSOR */
+  .cursor {
+    width: 10px; height: 10px;
+    background: var(--accent);
+    border-radius: 50%;
+    position: fixed; top: 0; left: 0;
+    pointer-events: none;
+    z-index: 9999;
+    transition: transform 0.15s ease;
+    mix-blend-mode: difference;
+  }
+  .cursor-ring {
+    width: 36px; height: 36px;
+    border: 1px solid var(--accent);
+    border-radius: 50%;
+    position: fixed; top: 0; left: 0;
+    pointer-events: none;
+    z-index: 9998;
+    transition: transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    opacity: 0.5;
+  }
+
+  /* NOISE OVERLAY */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.4;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 24px 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.3s, background 0.3s;
+  }
+  nav.scrolled {
+    border-color: var(--border);
+    background: rgba(10,10,10,0.92);
+    backdrop-filter: blur(20px);
+  }
+  .nav-logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 18px;
+    letter-spacing: -0.5px;
+    color: var(--text);
+    text-decoration: none;
+  }
+  .nav-logo span { color: var(--accent); }
+  .nav-links { display: flex; gap: 36px; list-style: none; }
+  .nav-links a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 13px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--accent); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 0 48px 64px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-bg-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: clamp(120px, 18vw, 260px);
+    color: transparent;
+    -webkit-text-stroke: 1px var(--border);
+    white-space: nowrap;
+    user-select: none;
+    pointer-events: none;
+    letter-spacing: -0.05em;
+    animation: float 8s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translate(-50%, -50%) translateY(0); }
+    50% { transform: translate(-50%, -50%) translateY(-20px); }
+  }
+
+  .hero-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 24px;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.2s forwards;
+  }
+  .hero-tag::before {
+    content: '';
+    width: 32px; height: 1px;
+    background: var(--accent);
+  }
+
+  .hero-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: clamp(52px, 8vw, 110px);
+    line-height: 0.92;
+    letter-spacing: -0.04em;
+    margin-bottom: 40px;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.4s forwards;
+  }
+  .hero-title .line2 { color: var(--muted); }
+  .hero-title em {
+    font-style: italic;
+    font-weight: 400;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--accent);
+  }
+
+  .hero-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.6s forwards;
+  }
+  .hero-desc {
+    max-width: 380px;
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--muted);
+  }
+  .hero-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--accent);
+    color: #000;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 16px 28px;
+    text-decoration: none;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .hero-cta:hover {
+    transform: translate(-3px, -3px);
+    box-shadow: 6px 6px 0 var(--accent2);
+  }
+  .hero-cta svg { transition: transform 0.2s; }
+  .hero-cta:hover svg { transform: translateX(4px); }
+
+  .hero-scroll {
+    position: absolute;
+    right: 48px;
+    top: 50%;
+    transform: translateY(-50%) rotate(90deg);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted2);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .hero-scroll::after {
+    content: '';
+    width: 60px; height: 1px;
+    background: var(--muted2);
+  }
+
+  /* STATS BAR */
+  .stats-bar {
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+  }
+  .stat-item {
+    padding: 36px 48px;
+    border-right: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+  .stat-item:last-child { border-right: none; }
+  .stat-item::before {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0;
+    width: 0; height: 2px;
+    background: var(--accent);
+    transition: width 1s ease;
+  }
+  .stat-item.visible::before { width: 100%; }
+  .stat-num {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 48px;
+    letter-spacing: -0.03em;
+    color: var(--text);
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+  }
+  .stat-num sup {
+    font-size: 22px;
+    color: var(--accent);
+    font-weight: 700;
+  }
+  .stat-label {
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 8px;
+    letter-spacing: 0.05em;
+  }
+
+  /* SECTION COMMONS */
+  section { padding: 100px 48px; }
+  .section-label {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 48px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+    max-width: 120px;
+  }
+
+  /* ABOUT */
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: start;
+  }
+  .about-heading {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: clamp(32px, 4vw, 52px);
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+  }
+  .about-heading em {
+    font-style: italic;
+    font-weight: 400;
+    color: var(--muted);
+    font-family: 'DM Sans', sans-serif;
+  }
+  .about-right p {
+    font-size: 16px;
+    line-height: 1.8;
+    color: var(--muted);
+    margin-bottom: 24px;
+  }
+  .about-right p strong { color: var(--text); font-weight: 500; }
+
+  .expertise-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 32px;
+  }
+  .tag {
+    padding: 8px 16px;
+    border: 1px solid var(--border);
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    transition: all 0.2s;
+  }
+  .tag:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  /* SKILLS */
+  #skills { background: var(--surface); }
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+  }
+  .skill-card {
+    background: var(--surface);
+    padding: 40px 36px;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.3s;
+  }
+  .skill-card:hover { background: var(--surface2); }
+  .skill-card::after {
+    content: attr(data-num);
+    position: absolute;
+    top: 20px; right: 24px;
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 72px;
+    color: var(--border);
+    line-height: 1;
+    transition: color 0.3s;
+  }
+  .skill-card:hover::after { color: var(--surface2); }
+  .skill-icon {
+    width: 44px; height: 44px;
+    background: var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    font-size: 20px;
+    transition: background 0.3s;
+  }
+  .skill-card:hover .skill-icon { background: var(--accent); }
+  .skill-name {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 18px;
+    margin-bottom: 12px;
+    letter-spacing: -0.02em;
+  }
+  .skill-desc {
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.6;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* CASE STUDIES */
+  .cases-heading {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: clamp(36px, 5vw, 64px);
+    letter-spacing: -0.04em;
+    margin-bottom: 64px;
+    max-width: 600px;
+    line-height: 1.05;
+  }
+  .case-card {
+    border: 1px solid var(--border);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    margin-bottom: 24px;
+    overflow: hidden;
+    transition: border-color 0.3s;
+    position: relative;
+  }
+  .case-card:hover { border-color: var(--accent); }
+  .case-info { padding: 48px; }
+  .case-tag {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent2);
+    margin-bottom: 16px;
+  }
+  .case-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 24px;
+    letter-spacing: -0.02em;
+    margin-bottom: 16px;
+  }
+  .case-desc {
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.7;
+    margin-bottom: 32px;
+  }
+  .case-results {
+    display: flex;
+    gap: 32px;
+  }
+  .result-item .result-num {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 28px;
+    color: var(--accent);
+    letter-spacing: -0.02em;
+  }
+  .result-item .result-label {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+  .case-visual {
+    background: var(--surface);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 280px;
+    position: relative;
+    overflow: hidden;
+  }
+  .case-visual-inner {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+  }
+
+  /* Mini chart */
+  .mini-chart { width: 100%; max-width: 280px; }
+  .chart-bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+    height: 120px;
+    margin-bottom: 12px;
+  }
+  .bar {
+    flex: 1;
+    background: var(--border);
+    border-radius: 2px 2px 0 0;
+    transition: background 0.3s;
+    position: relative;
+  }
+  .bar.active { background: var(--accent); }
+  .bar::after {
+    content: attr(data-label);
+    position: absolute;
+    bottom: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 10px;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+  .chart-title {
+    font-size: 12px;
+    color: var(--muted);
+    text-align: center;
+    margin-top: 24px;
+  }
+
+  /* Funnel */
+  .funnel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    width: 100%;
+    max-width: 260px;
+  }
+  .funnel-step {
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    font-size: 12px;
+    border-radius: 2px;
+    width: var(--w);
+    transition: width 0.3s;
+  }
+  .funnel-step .f-label { color: rgba(0,0,0,0.7); font-weight: 500; }
+  .funnel-step .f-val { color: rgba(0,0,0,0.5); font-size: 11px; }
+
+  /* Metric cards */
+  .metric-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    width: 100%;
+    max-width: 280px;
+  }
+  .metric-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    padding: 16px;
+    border-radius: 2px;
+  }
+  .metric-val {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 24px;
+    color: var(--accent);
+    letter-spacing: -0.02em;
+  }
+  .metric-lbl {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 4px;
+    letter-spacing: 0.05em;
+  }
+
+  /* TOOLS */
+  #tools { background: var(--surface); }
+  .tools-marquee-wrap {
+    overflow: hidden;
+    margin: 0 -48px;
+    padding: 0 48px;
+  }
+  .tools-marquee {
+    display: flex;
+    gap: 0;
+    animation: marquee 20s linear infinite;
+    width: max-content;
+  }
+  .tools-marquee:hover { animation-play-state: paused; }
+  @keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+  .tool-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 20px 32px;
+    border-right: 1px solid var(--border);
+    white-space: nowrap;
+    font-size: 14px;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+    cursor: default;
+    transition: color 0.2s;
+  }
+  .tool-pill:hover { color: var(--text); }
+  .tool-pill .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    flex-shrink: 0;
+  }
+
+  /* TESTIMONIALS */
+  .testi-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-top: 48px;
+  }
+  .testi-card {
+    border: 1px solid var(--border);
+    padding: 36px;
+    position: relative;
+  }
+  .testi-card::before {
+    content: '"';
+    font-family: 'Syne', sans-serif;
+    font-size: 80px;
+    font-weight: 800;
+    color: var(--border);
+    line-height: 1;
+    position: absolute;
+    top: 20px; right: 28px;
+  }
+  .testi-text {
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--muted);
+    margin-bottom: 28px;
+    font-style: italic;
+  }
+  .testi-author {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .testi-avatar {
+    width: 40px; height: 40px;
+    background: var(--border);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--accent);
+  }
+  .testi-name {
+    font-family: 'Syne', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+  }
+  .testi-pos { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+  /* CONTACT */
+  #contact {
+    background: var(--surface);
+    text-align: center;
+    padding: 120px 48px;
+  }
+  .contact-eyebrow {
+    font-size: 12px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 24px;
+  }
+  .contact-heading {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: clamp(48px, 8vw, 100px);
+    letter-spacing: -0.05em;
+    line-height: 0.9;
+    margin-bottom: 48px;
+  }
+  .contact-heading span { color: var(--muted); display: block; }
+  .contact-email {
+    display: inline-block;
+    font-size: 20px;
+    color: var(--text);
+    text-decoration: none;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 4px;
+    transition: border-color 0.2s, color 0.2s;
+    margin-bottom: 48px;
+  }
+  .contact-email:hover { border-color: var(--accent); color: var(--accent); }
+  .social-links { display: flex; justify-content: center; gap: 24px; }
+  .social-link {
+    width: 48px; height: 48px;
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 14px;
+    transition: all 0.2s;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+  }
+  .social-link:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    transform: translateY(-4px);
+  }
+
+  /* FOOTER */
+  footer {
+    padding: 24px 48px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  footer p { font-size: 12px; color: var(--muted); }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* PROGRESS BARS */
+  .progress-list { display: flex; flex-direction: column; gap: 16px; margin-top: 32px; }
+  .progress-item {}
+  .progress-top {
+    display: flex; justify-content: space-between;
+    font-size: 13px; margin-bottom: 8px;
+    color: var(--muted);
+  }
+  .progress-track {
+    height: 2px; background: var(--border);
+    position: relative; overflow: hidden;
+  }
+  .progress-fill {
+    position: absolute; left: 0; top: 0; height: 100%;
+    background: var(--accent);
+    width: 0;
+    transition: width 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  .progress-item.visible .progress-fill { width: var(--pct); }
+
+  @media (max-width: 900px) {
+    nav { padding: 20px 24px; }
+    .nav-links { display: none; }
+    .hero { padding: 0 24px 48px; }
+    section { padding: 72px 24px; }
+    .about-grid { grid-template-columns: 1fr; gap: 40px; }
+    .skills-grid { grid-template-columns: 1fr; }
+    .stats-bar { grid-template-columns: 1fr 1fr; }
+    .testi-grid { grid-template-columns: 1fr; }
+    .case-card { grid-template-columns: 1fr; }
+    .case-visual { min-height: 200px; }
+    footer { flex-direction: column; gap: 12px; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Cursor -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="#" class="nav-logo">Alex<span>.</span></a>
+  <ul class="nav-links">
+    <li><a href="#about">Về tôi</a></li>
+    <li><a href="#skills">Kỹ năng</a></li>
+    <li><a href="#cases">Case Studies</a></li>
+    <li><a href="#tools">Tools</a></li>
+    <li><a href="#contact">Liên hệ</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-bg-text">MARKET</div>
+  <div class="hero-scroll">Scroll</div>
+
+  <div class="hero-tag">Digital Marketer — 5 Years</div>
+  <h1 class="hero-title">
+    Grow<em>ing</em><br>
+    <span class="line2">Brands Through</span><br>
+    Data &amp; <em>Stories</em>
+  </h1>
+  <div class="hero-bottom">
+    <p class="hero-desc">Chuyên về performance marketing đa kênh — từ Meta Ads, Google, TikTok đến SEO và automation. Biến dữ liệu thành chiến lược, chiến lược thành doanh thu.</p>
+    <a href="#contact" class="hero-cta">
+      Hợp tác ngay
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="#000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </a>
+  </div>
+</section>
+
+<!-- STATS BAR -->
+<div class="stats-bar">
+  <div class="stat-item reveal">
+    <div class="stat-num"><span class="count" data-target="5">0</span><sup>+</sup></div>
+    <div class="stat-label">Năm kinh nghiệm</div>
+  </div>
+  <div class="stat-item reveal">
+    <div class="stat-num"><span class="count" data-target="42">0</span><sup>+</sup></div>
+    <div class="stat-label">Dự án đã triển khai</div>
+  </div>
+  <div class="stat-item reveal">
+    <div class="stat-num"><span class="count" data-target="15">0</span><sup>B+</sup></div>
+    <div class="stat-label">Tổng ngân sách quảng cáo</div>
+  </div>
+  <div class="stat-item reveal">
+    <div class="stat-num"><span class="count" data-target="320">0</span><sup>%</sup></div>
+    <div class="stat-label">ROAS trung bình đạt được</div>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-label">01 — Về tôi</div>
+  <div class="about-grid">
+    <div>
+      <h2 class="about-heading reveal">
+        Performance<br>
+        <em>meets</em><br>
+        Creativity
+      </h2>
+      <div class="progress-list reveal" style="transition-delay: 0.15s">
+        <div class="progress-item" data-pct="93%">
+          <div class="progress-top"><span>Meta Ads</span><span>93%</span></div>
+          <div class="progress-track"><div class="progress-fill" style="--pct:93%"></div></div>
+        </div>
+        <div class="progress-item" data-pct="87%">
+          <div class="progress-top"><span>Google Ads</span><span>87%</span></div>
+          <div class="progress-track"><div class="progress-fill" style="--pct:87%"></div></div>
+        </div>
+        <div class="progress-item" data-pct="82%">
+          <div class="progress-top"><span>TikTok Ads</span><span>82%</span></div>
+          <div class="progress-track"><div class="progress-fill" style="--pct:82%"></div></div>
+        </div>
+        <div class="progress-item" data-pct="78%">
+          <div class="progress-top"><span>SEO / Content</span><span>78%</span></div>
+          <div class="progress-track"><div class="progress-fill" style="--pct:78%"></div></div>
+        </div>
+        <div class="progress-item" data-pct="85%">
+          <div class="progress-top"><span>Analytics & Reporting</span><span>85%</span></div>
+          <div class="progress-track"><div class="progress-fill" style="--pct:85%"></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="about-right reveal" style="transition-delay: 0.2s">
+      <p>Tôi là <strong>Alex Nguyen</strong>, Digital Marketer với 5 năm xây dựng và scale các chiến dịch performance marketing cho doanh nghiệp B2C và B2B tại thị trường Việt Nam.</p>
+      <p>Thế mạnh của tôi nằm ở việc <strong>đọc dữ liệu như đọc câu chuyện</strong> — từ đó tìm ra insight, thiết kế creative, và tối ưu funnel để đưa CPA xuống thấp nhất trong khi vẫn scale ngân sách.</p>
+      <p>Không phải marketer chỉ biết chạy ads — tôi hiểu <strong>business model, unit economics</strong>, và luôn kết nối marketing với mục tiêu kinh doanh thực sự.</p>
+      <div class="expertise-tags">
+        <span class="tag">Paid Media</span>
+        <span class="tag">Funnel Optimization</span>
+        <span class="tag">E-commerce</span>
+        <span class="tag">Content Strategy</span>
+        <span class="tag">Analytics</span>
+        <span class="tag">A/B Testing</span>
+        <span class="tag">Automation</span>
+        <span class="tag">CRM</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="section-label">02 — Kỹ năng</div>
+  <div class="skills-grid">
+    <div class="skill-card reveal" data-num="01">
+      <div class="skill-icon">📣</div>
+      <div class="skill-name">Paid Advertising</div>
+      <div class="skill-desc">Tối ưu Meta Ads, Google Ads, TikTok Ads. Từ cấu trúc campaign, testing creative đến scale ngân sách giữ ROAS ổn định.</div>
+    </div>
+    <div class="skill-card reveal" data-num="02" style="transition-delay:0.1s">
+      <div class="skill-icon">📊</div>
+      <div class="skill-name">Analytics & Data</div>
+      <div class="skill-desc">Xây dựng dashboard đo lường, phân tích cohort, tracking pixel chuẩn. Quyết định dựa trên số liệu thực, không cảm tính.</div>
+    </div>
+    <div class="skill-card reveal" data-num="03" style="transition-delay:0.2s">
+      <div class="skill-icon">🎯</div>
+      <div class="skill-name">Funnel & CRO</div>
+      <div class="skill-desc">Tối ưu hành trình khách hàng từ awareness đến purchase. A/B test landing page, email sequence, và retargeting flow.</div>
+    </div>
+    <div class="skill-card reveal" data-num="04" style="transition-delay:0.1s">
+      <div class="skill-icon">🛒</div>
+      <div class="skill-name">E-commerce</div>
+      <div class="skill-desc">Quản lý và phát triển gian hàng Shopee, TikTok Shop. Tối ưu listing, flash sale, và ads nội sàn để tăng conversion.</div>
+    </div>
+    <div class="skill-card reveal" data-num="05" style="transition-delay:0.2s">
+      <div class="skill-icon">✍️</div>
+      <div class="skill-name">Content Strategy</div>
+      <div class="skill-desc">Xây dựng content pillar, editorial calendar, và brand voice phù hợp với từng kênh — từ Facebook đến TikTok đến blog SEO.</div>
+    </div>
+    <div class="skill-card reveal" data-num="06" style="transition-delay:0.3s">
+      <div class="skill-icon">⚡</div>
+      <div class="skill-name">Marketing Automation</div>
+      <div class="skill-desc">Thiết lập workflow tự động hóa: email drip, chatbot, CRM integration. Nuôi dưỡng lead hiệu quả không cần thêm nhân lực.</div>
+    </div>
+  </div>
+</section>
+
+<!-- CASE STUDIES -->
+<section id="cases">
+  <div class="section-label">03 — Case Studies</div>
+  <h2 class="cases-heading reveal">Kết quả thực tế từ các dự án</h2>
+
+  <!-- Case 1 -->
+  <div class="case-card reveal">
+    <div class="case-info">
+      <div class="case-tag">E-commerce · Meta Ads</div>
+      <h3 class="case-title">Scale Revenue 4x cho Brand Thời Trang</h3>
+      <p class="case-desc">Tái cấu trúc toàn bộ account Meta Ads, áp dụng Advantage+ Shopping Campaign kết hợp creative testing framework. Tăng ngân sách từ 50M → 200M/tháng mà ROAS vẫn giữ trên 4x.</p>
+      <div class="case-results">
+        <div class="result-item">
+          <div class="result-num">4.2x</div>
+          <div class="result-label">ROAS</div>
+        </div>
+        <div class="result-item">
+          <div class="result-num">-38%</div>
+          <div class="result-label">CPA giảm</div>
+        </div>
+        <div class="result-item">
+          <div class="result-num">+312%</div>
+          <div class="result-label">Revenue</div>
+        </div>
+      </div>
+    </div>
+    <div class="case-visual">
+      <div class="case-visual-inner">
+        <div class="mini-chart">
+          <div class="chart-bars">
+            <div class="bar" style="height:35%" data-label="T1"></div>
+            <div class="bar" style="height:42%" data-label="T2"></div>
+            <div class="bar" style="height:38%" data-label="T3"></div>
+            <div class="bar active" style="height:55%" data-label="T4"></div>
+            <div class="bar active" style="height:72%" data-label="T5"></div>
+            <div class="bar active" style="height:85%" data-label="T6"></div>
+            <div class="bar active" style="height:100%" data-label="T7"></div>
+          </div>
+          <div class="chart-title">Monthly Revenue Growth</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Case 2 -->
+  <div class="case-card reveal" style="transition-delay:0.1s">
+    <div class="case-info">
+      <div class="case-tag">Lead Gen · Google Ads + SEO</div>
+      <h3 class="case-title">Tối ưu CPL cho Doanh Nghiệp B2B</h3>
+      <p class="case-desc">Xây dựng lại cấu trúc Google Search Ads theo intent-based bidding, kết hợp SEO on-page. Giảm CPL từ 450K → 180K trong 3 tháng, chất lượng lead tăng đáng kể.</p>
+      <div class="case-results">
+        <div class="result-item">
+          <div class="result-num">-60%</div>
+          <div class="result-label">CPL giảm</div>
+        </div>
+        <div class="result-item">
+          <div class="result-num">+85%</div>
+          <div class="result-label">Organic traffic</div>
+        </div>
+        <div class="result-item">
+          <div class="result-num">3.8x</div>
+          <div class="result-label">ROI</div>
+        </div>
+      </div>
+    </div>
+    <div class="case-visual">
+      <div class="case-visual-inner">
+        <div class="funnel">
+          <div class="funnel-step" style="--w:100%;background:#e8ff47">
+            <span class="f-label">Impressions</span><span class="f-val">850K</span>
+          </div>
+          <div class="funnel-step" style="--w:72%;background:#c8e020">
+            <span class="f-label">Clicks</span><span class="f-val">12.4K</span>
+          </div>
+          <div class="funnel-step" style="--w:50%;background:#a8c010">
+            <span class="f-label">Landing Page</span><span class="f-val">8.1K</span>
+          </div>
+          <div class="funnel-step" style="--w:32%;background:#88a000">
+            <span class="f-label">Form Submit</span><span class="f-val">1.2K</span>
+          </div>
+          <div class="funnel-step" style="--w:20%;background:#688000">
+            <span class="f-label">Qualified Lead</span><span class="f-val" style="color:rgba(255,255,255,0.7)">340</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Case 3 -->
+  <div class="case-card reveal" style="transition-delay:0.2s">
+    <div class="case-info">
+      <div class="case-tag">TikTok Ads · Content</div>
+      <h3 class="case-title">Xây kênh TikTok 0 → 100K Followers</h3>
+      <p class="case-desc">Kết hợp content organic và paid spark ads để build thương hiệu. Xây dựng content calendar, đào tạo team content, và scaling TikTok Shop từ 0 đến 500 đơn/ngày trong 6 tháng.</p>
+      <div class="case-results">
+        <div class="result-item">
+          <div class="result-num">100K+</div>
+          <div class="result-label">Followers</div>
+        </div>
+        <div class="result-item">
+          <div class="result-num">500</div>
+          <div class="result-label">Đơn/ngày</div>
+        </div>
+        <div class="result-item">
+          <div class="result-num">8.4%</div>
+          <div class="result-label">CVR</div>
+        </div>
+      </div>
+    </div>
+    <div class="case-visual">
+      <div class="case-visual-inner">
+        <div class="metric-grid">
+          <div class="metric-card">
+            <div class="metric-val">4.2M</div>
+            <div class="metric-lbl">Total Views</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-val">8.4%</div>
+            <div class="metric-lbl">Avg CVR</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-val">12K</div>
+            <div class="metric-lbl">GMV/month</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-val">2.1x</div>
+            <div class="metric-lbl">Spark ROAS</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TOOLS -->
+<section id="tools">
+  <div class="section-label" style="padding: 0 0 48px 0">04 — Tools thường dùng</div>
+  <div class="tools-marquee-wrap">
+    <div class="tools-marquee" id="marquee">
+      <!-- set 1 -->
+      <div class="tool-pill"><span class="dot"></span>Meta Ads Manager</div>
+      <div class="tool-pill"><span class="dot"></span>Google Ads</div>
+      <div class="tool-pill"><span class="dot"></span>TikTok Ads</div>
+      <div class="tool-pill"><span class="dot"></span>Google Analytics 4</div>
+      <div class="tool-pill"><span class="dot"></span>Google Tag Manager</div>
+      <div class="tool-pill"><span class="dot"></span>Looker Studio</div>
+      <div class="tool-pill"><span class="dot"></span>Shopee Seller</div>
+      <div class="tool-pill"><span class="dot"></span>TikTok Shop</div>
+      <div class="tool-pill"><span class="dot"></span>Canva Pro</div>
+      <div class="tool-pill"><span class="dot"></span>CapCut</div>
+      <div class="tool-pill"><span class="dot"></span>Klaviyo</div>
+      <div class="tool-pill"><span class="dot"></span>Notion</div>
+      <!-- set 2 (duplicate) -->
+      <div class="tool-pill"><span class="dot"></span>Meta Ads Manager</div>
+      <div class="tool-pill"><span class="dot"></span>Google Ads</div>
+      <div class="tool-pill"><span class="dot"></span>TikTok Ads</div>
+      <div class="tool-pill"><span class="dot"></span>Google Analytics 4</div>
+      <div class="tool-pill"><span class="dot"></span>Google Tag Manager</div>
+      <div class="tool-pill"><span class="dot"></span>Looker Studio</div>
+      <div class="tool-pill"><span class="dot"></span>Shopee Seller</div>
+      <div class="tool-pill"><span class="dot"></span>TikTok Shop</div>
+      <div class="tool-pill"><span class="dot"></span>Canva Pro</div>
+      <div class="tool-pill"><span class="dot"></span>CapCut</div>
+      <div class="tool-pill"><span class="dot"></span>Klaviyo</div>
+      <div class="tool-pill"><span class="dot"></span>Notion</div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section id="testimonials">
+  <div class="section-label">05 — Nhận xét</div>
+  <div class="testi-grid">
+    <div class="testi-card reveal">
+      <p class="testi-text">Alex không chỉ chạy ads giỏi mà còn hiểu sâu về business. Mỗi đề xuất của anh đều được back bởi data cụ thể và tư duy chiến lược rõ ràng.</p>
+      <div class="testi-author">
+        <div class="testi-avatar">TN</div>
+        <div>
+          <div class="testi-name">Trần Nam</div>
+          <div class="testi-pos">CEO, Fashion Brand</div>
+        </div>
+      </div>
+    </div>
+    <div class="testi-card reveal" style="transition-delay:0.1s">
+      <p class="testi-text">Trong 3 tháng hợp tác, doanh thu online tăng 280%. Điều ấn tượng nhất là Alex luôn chủ động báo cáo và đề xuất hướng tối ưu mà không cần nhắc.</p>
+      <div class="testi-author">
+        <div class="testi-avatar">LH</div>
+        <div>
+          <div class="testi-name">Lê Hương</div>
+          <div class="testi-pos">Marketing Director, FMCG</div>
+        </div>
+      </div>
+    </div>
+    <div class="testi-card reveal" style="transition-delay:0.2s">
+      <p class="testi-text">Hiếm khi gặp marketer vừa giỏi performance vừa có tư duy thương hiệu. Alex là người như vậy — cân bằng giữa số ngắn hạn và brand dài hạn.</p>
+      <div class="testi-author">
+        <div class="testi-avatar">PK</div>
+        <div>
+          <div class="testi-name">Phương Khanh</div>
+          <div class="testi-pos">Founder, D2C Startup</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="contact-eyebrow">Sẵn sàng hợp tác</div>
+  <h2 class="contact-heading reveal">
+    Let's build
+    <span>something great.</span>
+  </h2>
+  <a href="mailto:alex@email.com" class="contact-email reveal" style="transition-delay:0.1s">alex@email.com</a>
+  <div class="social-links reveal" style="transition-delay:0.2s">
+    <a href="#" class="social-link">LI</a>
+    <a href="#" class="social-link">FB</a>
+    <a href="#" class="social-link">TK</a>
+    <a href="#" class="social-link">CV</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>© 2025 Alex Nguyen — Digital Marketer</p>
+  <p>Designed with intention. Built with data.</p>
+</footer>
+
+<script>
+  // CURSOR
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.transform = `translate(${mx - 5}px, ${my - 5}px)`;
+  });
+
+  function animateRing() {
+    rx += (mx - rx - 18) * 0.12;
+    ry += (my - ry - 18) * 0.12;
+    ring.style.transform = `translate(${rx}px, ${ry}px)`;
+    requestAnimationFrame(animateRing);
+  }
+  animateRing();
+
+  // NAV scroll
+  window.addEventListener('scroll', () => {
+    document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 50);
+  });
+
+  // INTERSECTION OBSERVER
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        // Trigger progress bars
+        entry.target.querySelectorAll('.progress-item').forEach(p => p.classList.add('visible'));
+        obs.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+
+  document.querySelectorAll('.reveal, .stat-item').forEach(el => obs.observe(el));
+
+  // Progress bars in about section
+  const progObs = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.5 });
+  document.querySelectorAll('.progress-item').forEach(el => progObs.observe(el));
+
+  // COUNT UP
+  function countUp(el) {
+    const target = parseInt(el.getAttribute('data-target'));
+    const duration = 1800;
+    const start = performance.now();
+    function update(now) {
+      const elapsed = now - start;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      el.textContent = Math.round(eased * target);
+      if (progress < 1) requestAnimationFrame(update);
+    }
+    requestAnimationFrame(update);
+  }
+
+  const countObs = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.querySelectorAll('.count').forEach(countUp);
+        countObs.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.5 });
+  document.querySelector('.stats-bar').querySelectorAll('.stat-item').forEach(el => countObs.observe(el));
+</script>
+</body>
+</html>
